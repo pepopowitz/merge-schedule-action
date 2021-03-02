@@ -50,7 +50,8 @@ async function handlePullRequest() {
     `Handling pull request ${eventPayload.action} for ${eventPayload.pull_request.html_url}`
   );
 
-  if (eventPayload.pull_request.state !== "open") {
+  core.info(`payload: ${JSON.stringify(eventPayload, null, 2)}`);
+  if (eventPayload.pull_request.state !== 'open') {
     core.info(`Pull request already closed, ignoring`);
     return;
   }
@@ -72,12 +73,12 @@ async function handlePullRequest() {
     const { data } = await octokit.checks.create({
       owner: eventPayload.repository.owner.login,
       repo: eventPayload.repository.name,
-      name: "Merge Schedule",
+      name: 'Merge Schedule',
       head_sha: eventPayload.pull_request.head.sha,
-      conclusion: "failure",
+      conclusion: 'failure',
       output: {
         title: `"${datestring}" is not a valid date`,
-        summary: "TO BE DONE: add useful summary",
+        summary: 'TO BE DONE: add useful summary',
       },
     });
     core.info(`Check run created: ${data.html_url}`);
@@ -88,12 +89,12 @@ async function handlePullRequest() {
     const { data } = await octokit.checks.create({
       owner: eventPayload.repository.owner.login,
       repo: eventPayload.repository.name,
-      name: "Merge Schedule",
+      name: 'Merge Schedule',
       head_sha: eventPayload.pull_request.head.sha,
-      conclusion: "failure",
+      conclusion: 'failure',
       output: {
         title: `"${datestring}" is already in the past`,
-        summary: "TO BE DONE: add useful summary",
+        summary: 'TO BE DONE: add useful summary',
       },
     });
     core.info(`Check run created: ${data.html_url}`);
@@ -103,12 +104,12 @@ async function handlePullRequest() {
   const { data } = await octokit.checks.create({
     owner: eventPayload.repository.owner.login,
     repo: eventPayload.repository.name,
-    name: "Merge Schedule",
+    name: 'Merge Schedule',
     head_sha: eventPayload.pull_request.head.sha,
-    status: "in_progress",
+    status: 'in_progress',
     output: {
       title: `Scheduled to be merged on ${datestring}`,
-      summary: "TO BE DONE: add useful summary",
+      summary: 'TO BE DONE: add useful summary',
     },
   });
   core.info(`Check run created: ${data.html_url}`);
