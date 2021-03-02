@@ -145,19 +145,19 @@ const localeDate = __webpack_require__(112);
  */
 async function handleSchedule() {
   const octokit = new Octokit();
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
+  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
 
   const eventPayload = require(process.env.GITHUB_EVENT_PATH);
 
-  const mergeMethod = process.env.INPUT_MERGE_METHOD
+  const mergeMethod = process.env.INPUT_MERGE_METHOD;
 
   core.info(`Loading open pull request`);
   const pullRequests = await octokit.paginate(
-    "GET /repos/:owner/:repo/pulls",
+    'GET /repos/:owner/:repo/pulls',
     {
       owner,
       repo,
-      state: "open",
+      state: 'open',
     },
     (response) => {
       return response.data
@@ -195,9 +195,10 @@ async function handleSchedule() {
       owner,
       repo,
       pull_number: pullRequest.number,
-      merge_method: mergeMethod
+      merge_method: mergeMethod,
     });
 
+    core.info(`payload: ${JSON.stringify(eventPayload, null, 2)}`);
     // find check runs by the Merge schedule action
     const checkRuns = await octokit.paginate(octokit.checks.listForRef, {
       owner: eventPayload.repository.owner.login,
@@ -212,12 +213,12 @@ async function handleSchedule() {
       check_run_id: checkRun.id,
       owner: eventPayload.repository.owner.login,
       repo: eventPayload.repository.name,
-      name: "Merge Schedule",
+      name: 'Merge Schedule',
       head_sha: eventPayload.pull_request.head.sha,
-      status: "completed",
+      status: 'completed',
       output: {
         title: `Scheduled on ${datestring}`,
-        summary: "Merged successfully",
+        summary: 'Merged successfully',
       },
     });
 
